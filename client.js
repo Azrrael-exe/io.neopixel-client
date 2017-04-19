@@ -1,13 +1,13 @@
 var io = require("socket.io-client")
 var socket = io('https://io-neopixel.herokuapp.com/');
-// var SerialPort = require('serialport');
-// var port = new SerialPort('COM3',{
-//   baudrate : 115200
-// });
-//
-// port.on('open', function(){
-//   console.log("SerialPort open!")
-// });
+var SerialPort = require('serialport');
+var port = new SerialPort('COM3',{
+  baudrate : 115200
+});
+
+port.on('open', function(){
+  console.log("SerialPort open!")
+});
 
 socket.on('connect', function(){
   console.log(socket.id);
@@ -26,6 +26,10 @@ socket.on('connect', function(){
 });
 
 socket.on('device-command', function(msg){
-  // port.write('main screen turn on', function(err){});
-  console.log(msg)
+  port.write(JSON.stringify(msg), function(err){
+    if (err) {
+      return console.log('Error on write: ', err.message);
+    }
+    console.log({'Serial-OUT':JSON.stringify(msg)});
+  });
 })
